@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TMDBPopularMovie</string>
+    <string name="api_key">2f1a296b9111961a25e479e1df35c4da</string>
+</resources>
