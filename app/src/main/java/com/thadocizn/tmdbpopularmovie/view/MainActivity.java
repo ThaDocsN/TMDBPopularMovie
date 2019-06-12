@@ -12,19 +12,11 @@ import com.thadocizn.tmdbpopularmovie.R;
 import com.thadocizn.tmdbpopularmovie.adapter.MovieAdapter;
 import com.thadocizn.tmdbpopularmovie.model.Movie;
 import com.thadocizn.tmdbpopularmovie.model.MovieDbResponse;
-import com.thadocizn.tmdbpopularmovie.service.MovieDataService;
-import com.thadocizn.tmdbpopularmovie.service.RetroInstance;
 
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getPopularMovies() {
 
-        movies = new ArrayList<>();
+       /* movies = new ArrayList<>();
         MovieDataService movieDataService = RetroInstance.getServices();
 
         movieDbResponseObservable = movieDataService.getPopularMovies(this.getString(R.string.api_key));
@@ -99,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                         init();
                     }
-                }));
+                }));*/
     }
 
     public void init() {
