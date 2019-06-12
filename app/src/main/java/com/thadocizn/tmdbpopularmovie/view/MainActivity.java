@@ -47,23 +47,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        viewModel.clear();
-    }
-
-    public void getPopularMovies() {
-
-        viewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                movieArrayList = (ArrayList<Movie>) movies;
-                init();
-            }
-        });
-    }
-
     public void init() {
 
         recyclerView = findViewById(R.id.rvMovies);
@@ -82,5 +65,21 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(movieAdapter);
         movieAdapter.notifyDataSetChanged();
 
+    }
+
+    public void getPopularMovies() {
+
+        viewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                movieArrayList = (ArrayList<Movie>) movies;
+                init();
+            }
+        });
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.clear();
     }
 }
