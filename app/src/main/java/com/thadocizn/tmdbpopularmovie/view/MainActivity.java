@@ -1,7 +1,10 @@
 package com.thadocizn.tmdbpopularmovie.view;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,21 +14,18 @@ import android.support.v7.widget.RecyclerView;
 import com.thadocizn.tmdbpopularmovie.R;
 import com.thadocizn.tmdbpopularmovie.adapter.MovieAdapter;
 import com.thadocizn.tmdbpopularmovie.model.Movie;
-import com.thadocizn.tmdbpopularmovie.model.MovieDbResponse;
+import com.thadocizn.tmdbpopularmovie.viewModel.MovieViewModel;
 
 import java.util.ArrayList;
-
-import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Movie> movies;
+    private ArrayList<Movie> movieArrayList;
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private SwipeRefreshLayout refreshLayout;
-    private Observable<MovieDbResponse> movieDbResponseObservable;
-    private CompositeDisposable disposable = new CompositeDisposable();
+    private MovieViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setTitle("TMDB Popular Movies Today");
+
+        viewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
 
         getPopularMovies();
 
@@ -48,56 +50,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disposable.clear();
+        viewModel.clear();
     }
 
     public void getPopularMovies() {
 
-       /* movies = new ArrayList<>();
-        MovieDataService movieDataService = RetroInstance.getServices();
-
-        movieDbResponseObservable = movieDataService.getPopularMovies(this.getString(R.string.api_key));
-
-        disposable.add(movieDbResponseObservable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Function<MovieDbResponse, ObservableSource<Movie>>() {
-                    @Override
-                    public ObservableSource<Movie> apply(MovieDbResponse movieDbResponse) throws Exception {
-                        return Observable.fromArray(movieDbResponse.getMovies().toArray(new Movie[0]));
-                    }
-                })
-                .filter(new Predicate<Movie>() {
-                    @Override
-                    public boolean test(Movie movie) throws Exception {
-                        return movie.getVoteAverage() > 7.0;
-                    }
-                })
-                .subscribeWith(new DisposableObserver<Movie>() {
-
-                    @Override
-                    public void onNext(Movie movie) {
-
-                        movies.add(movie);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                        init();
-                    }
-                }));*/
+        viewModel.getAllMovies().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                movieArrayList = (ArrayList<Movie>) movies;
+                init();
+            }
+        });
     }
 
     public void init() {
 
         recyclerView = findViewById(R.id.rvMovies);
-        movieAdapter = new MovieAdapter(this, movies);
+        movieAdapter = new MovieAdapter(this, movieArrayList);
 
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 
